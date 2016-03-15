@@ -1,7 +1,7 @@
+import java.io.File;
 import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -9,10 +9,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
@@ -51,6 +54,25 @@ public class CardController implements Initializable {
     @FXML // fx:id="answer"
     private TextField answer; // Value injected by FXMLLoader
     
+    @FXML // fx:id="save"
+    private MenuItem save; // Value injected by FXMLLoader
+    
+
+    Stage stage; 
+    
+
+    
+  
+    @FXML
+    void saveDictionary(ActionEvent event){
+    	FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Dictionary");
+        stage= (Stage) question.getScene().getWindow();       
+        File file = fileChooser.showSaveDialog(stage);
+        //todo csv save
+       
+        }
+ 
     
     @FXML
     void showAnswer(ActionEvent event) throws InterruptedException {
@@ -82,6 +104,8 @@ public class CardController implements Initializable {
         question.setTextAlignment(TextAlignment.CENTER);
 	    question.setFont(new Font(26));
 	    question.setTextFill(Color.CHOCOLATE);
+	    
+	    
 		
 	}
 

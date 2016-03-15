@@ -23,6 +23,7 @@ public class Main extends Application {
             return new CardController(model);
         }
     });
+	
     // setting the stage
     AnchorPane pane =  (AnchorPane) loader.load();
     Scene scene = new Scene( pane );
