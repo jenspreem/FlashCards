@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,16 +20,20 @@ public class CardDB {
 	public TreeMap<String, String> getReverseDictionary() {
 		return reverse_dictionary;
 	}
-	public void fillCards(){
-			
-		String csvFile = "Soome.csv";
+	
+	
+	
+	public void fillCards(File file){
+		
+		dictionary.clear();
+		reverse_dictionary.clear();
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = "\t";
 		
 		try {
 	 
-			br = new BufferedReader(new FileReader(csvFile));
+			br = new BufferedReader(new FileReader(file));
 			while ((line = br.readLine()) != null) { 
 				String[] flashpair = line.split(cvsSplitBy);
 				dictionary.put(flashpair[0], flashpair[1]);  
@@ -55,18 +60,16 @@ public class CardDB {
 	
 		
 	}
+		
 	
+	public void fillCards(){
+		String csvFileName = "Soome.csv";
+		File file = new File(csvFileName);
+		fillCards(file);	
+		
+		
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 	
 }

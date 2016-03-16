@@ -1,5 +1,9 @@
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
+import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
@@ -70,7 +74,18 @@ public class CardController implements Initializable {
         stage= (Stage) question.getScene().getWindow();       
         File file = fileChooser.showSaveDialog(stage);
         //todo csv save
-       
+        String eol = System.getProperty("line.separator");
+
+        try (Writer writer = new FileWriter(file)) {
+          for (Map.Entry<String, String> entry : db.getDictionary().entrySet()) {
+            writer.append(entry.getKey())
+                  .append('\t')
+                  .append(entry.getValue())
+                  .append(eol);
+          }
+        } catch (IOException ex) {
+          ex.printStackTrace(System.err);
+        }
         }
  
     @FXML
@@ -79,7 +94,7 @@ public class CardController implements Initializable {
         fileChooser.setTitle("Load Dictionary");
         stage= (Stage) question.getScene().getWindow();       
         File file = fileChooser.showOpenDialog(stage);
-        //todo csv load
+        db.fillCards(file);
        
         }
     @FXML
