@@ -27,31 +27,9 @@ public class CardController implements Initializable {
 	private final CardDB db;
 	private String questionstring;
 	private String answerstring;
+	private Stage stage; //required later by fileChooser in load/saveDictionary methods
+	private boolean originalDirection=true;//questions taken from db.getDictionary
 	
-
-    public CardController(CardDB model) {
-        this.db = model;
-    }
-  //check for mistakes this one was a woozy
-    final Timeline animation = new Timeline(
-            new KeyFrame(Duration.seconds(2),
-            new EventHandler<ActionEvent>() {
-                @Override public void handle(ActionEvent actionEvent) {
-            		questionstring=getQuestion();
-            		question.setText(questionstring);
-                	answer.setDisable(false);
-                }
-            }));
-    
-    private String getQuestion(){
-    	Random generator = new Random();
-    	Object[] values = this.db.getReverseDictionary().values().toArray();
-    	String randomValue = (String)values[generator.nextInt(values.length)];
-    	return randomValue;
-    }
-
-
-
 	@FXML // fx:id="question"
     private Label question; // Value injected by FXMLLoader
     
@@ -61,14 +39,55 @@ public class CardController implements Initializable {
     @FXML // fx:id="save"
     private MenuItem save; // Value injected by FXMLLoader
     
-
-    private Stage stage; //required later by fileChooser
+    @FXML // fx:id="changeDirButton"
+    private MenuItem changeDirButton; // Value injected by FXMLLoader
     
+    //animation sets new question and unlocks answer box
+    final Timeline animation = new Timeline(
+            new KeyFrame(Duration.seconds(2),
+            new EventHandler<ActionEvent>() {
+                @Override public void handle(ActionEvent actionEvent) {
+            		questionstring=getQuestion();
+            		question.setText(questionstring);
+                	answer.setDisable(false);
+                }
+            }));
+	
+	
+	
+    public CardController(CardDB model) {
+        this.db = model;
+    }
+    
+
+    
+    private String getQuestion(){
+    	Random generator = new Random();
+    	Object[] values;
+    	if (originalDirection){
+        	values = this.db.getReverseDictionary().values().toArray();
+    	}
+    	else {values =this.db.getDictionary().values().toArray();}
+    	String randomValue = (String)values[generator.nextInt(values.length)];
+    	return randomValue;
+    }
+
+
+
+
+
+    @FXML
+    private void changeDirection(){
+    	originalDirection=!originalDirection;
+    	answer.setDisable(true);
+    	animation.play();
+    	
+    }
 
     
   
     @FXML
-    void saveDictionary(ActionEvent event){
+    private void saveDictionary(ActionEvent event){
     	FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Dictionary");
         stage= (Stage) question.getScene().getWindow();       
@@ -89,7 +108,7 @@ public class CardController implements Initializable {
         }
  
     @FXML
-    void loadDictionary(ActionEvent event){
+    private void loadDictionary(ActionEvent event){
     	FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load Dictionary");
         stage= (Stage) question.getScene().getWindow();       
@@ -97,24 +116,45 @@ public class CardController implements Initializable {
         db.fillCards(file);
        
         }
-    @FXML
-    void showAnswer(ActionEvent event) throws InterruptedException {
+    @FXML //todo refactor maybe you could cut down on repetitive code or something?
+    private void showAnswer(ActionEvent event) throws InterruptedException {
      answerstring=((TextField) event.getSource()).getText();
-     if(questionstring.equalsIgnoreCase(db.getReverseDictionary().get(answerstring))){
-         question.setText("Õige\n"+questionstring+"="+answerstring);
-         answer.clear();
-         answer.setDisable(true);
-         animation.setCycleCount(1);
-         animation.play();
+     if (originalDirection){
+    	 if(questionstring.equalsIgnoreCase(db.getReverseDictionary().get(answerstring))){
+             question.setText("Õige\n"+questionstring+"="+answerstring);
+             answer.clear();
+             answer.setDisable(true);
+             animation.setCycleCount(1);
+             animation.play();
 
+         }
+         else{
+        	 question.setText("Vale!\n"+questionstring+"="+db.getDictionary().get(questionstring));
+        	 answer.clear();
+        	 answer.setDisable(true);
+        	 animation.setCycleCount(1);
+        	 animation.play();
+
+         }
+     
      }
-     else{
-    	 question.setText("Vale!\n"+questionstring+"="+db.getDictionary().get(questionstring));
-    	 answer.clear();
-    	 answer.setDisable(true);
-    	 animation.setCycleCount(1);
-    	 animation.play();
+     else {
+    	 if(questionstring.equalsIgnoreCase(db.getDictionary().get(answerstring))){
+             question.setText("Õige\n"+questionstring+"="+answerstring);
+             answer.clear();
+             answer.setDisable(true);
+             animation.setCycleCount(1);
+             animation.play();
 
+         }
+         else{
+        	 question.setText("Vale!\n"+questionstring+"="+db.getReverseDictionary().get(questionstring));
+        	 answer.clear();
+        	 answer.setDisable(true);
+        	 animation.setCycleCount(1);
+        	 animation.play();
+
+         }
      }
 
     }

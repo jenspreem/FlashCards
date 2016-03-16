@@ -20,9 +20,9 @@ fx:controller="CardController">
             <MenuItem mnemonicParsing="false" text="Close" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Delete" />
+        <Menu mnemonicParsing="false" text="Language">
+          <items>            
+             <MenuItem fx:id="changeDirButton" mnemonicParsing="false" text="ChangeDirection" onAction="#changeDirection" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

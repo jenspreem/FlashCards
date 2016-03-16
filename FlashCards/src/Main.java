@@ -13,7 +13,7 @@ public class Main extends Application {
 	//create model and attach it to CardController
 	final CardDB model = new CardDB();
 	model.fillCards();
-	//loader loads xml, modified controllerfactory
+	//loader loads fxml modified controllerfactory
 	//allows us to attach our model to controller on creation
 	FXMLLoader loader = new FXMLLoader();
 	loader.setLocation(getClass().getResource("CardGUI.fxml"));
