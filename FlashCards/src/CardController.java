@@ -65,9 +65,9 @@ public class CardController implements Initializable {
     	Random generator = new Random();
     	Object[] values;
     	if (originalDirection){
-        	values = this.db.getReverseDictionary().values().toArray();
+        	values = this.db.getDictionary().keySet().toArray();
     	}
-    	else {values =this.db.getDictionary().values().toArray();}
+    	else {values =this.db.getReverseDictionary().keySet().toArray();}
     	String randomValue = (String)values[generator.nextInt(values.length)];
     	return randomValue;
     }
@@ -92,7 +92,7 @@ public class CardController implements Initializable {
         fileChooser.setTitle("Save Dictionary");
         stage= (Stage) question.getScene().getWindow();       
         File file = fileChooser.showSaveDialog(stage);
-        //todo csv save
+        //todo csv save, add options to denote which direction somethin is deleted?
         String eol = System.getProperty("line.separator");
 
         try (Writer writer = new FileWriter(file)) {
@@ -122,6 +122,7 @@ public class CardController implements Initializable {
      if (originalDirection){
     	 if(questionstring.equalsIgnoreCase(db.getReverseDictionary().get(answerstring))){
              question.setText("Õige\n"+questionstring+"="+answerstring);
+             db.getDictionary().remove(questionstring); //you'll save a csv without this pair
              answer.clear();
              answer.setDisable(true);
              animation.setCycleCount(1);
@@ -141,6 +142,8 @@ public class CardController implements Initializable {
      else {
     	 if(questionstring.equalsIgnoreCase(db.getDictionary().get(answerstring))){
              question.setText("Õige\n"+questionstring+"="+answerstring);
+             db.getDictionary().remove(answerstring); //you'll save a csv without this pair
+             //in future remove from reverse and dont remove hwole pair
              answer.clear();
              answer.setDisable(true);
              animation.setCycleCount(1);
