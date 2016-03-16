@@ -41,7 +41,7 @@ public class CardController implements Initializable {
     
     private String getQuestion(){
     	Random generator = new Random();
-    	Object[] values = this.db.getCards().values().toArray();
+    	Object[] values = this.db.getReverseDictionary().values().toArray();
     	String randomValue = (String)values[generator.nextInt(values.length)];
     	return randomValue;
     }
@@ -58,7 +58,7 @@ public class CardController implements Initializable {
     private MenuItem save; // Value injected by FXMLLoader
     
 
-    Stage stage; 
+    private Stage stage; //required later by fileChooser
     
 
     
@@ -73,11 +73,19 @@ public class CardController implements Initializable {
        
         }
  
-    
+    @FXML
+    void loadDictionary(ActionEvent event){
+    	FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load Dictionary");
+        stage= (Stage) question.getScene().getWindow();       
+        File file = fileChooser.showOpenDialog(stage);
+        //todo csv load
+       
+        }
     @FXML
     void showAnswer(ActionEvent event) throws InterruptedException {
      answerstring=((TextField) event.getSource()).getText();
-     if(questionstring.equalsIgnoreCase(db.getCards().get(answerstring))){
+     if(questionstring.equalsIgnoreCase(db.getReverseDictionary().get(answerstring))){
          question.setText("Õige\n"+questionstring+"="+answerstring);
          answer.clear();
          answer.setDisable(true);
@@ -86,7 +94,7 @@ public class CardController implements Initializable {
 
      }
      else{
-    	 question.setText("Vale!\n"+questionstring+"="+db.getCards().get(questionstring));
+    	 question.setText("Vale!\n"+questionstring+"="+db.getDictionary().get(questionstring));
     	 answer.clear();
     	 answer.setDisable(true);
     	 animation.setCycleCount(1);
