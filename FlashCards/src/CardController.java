@@ -1,8 +1,15 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -28,7 +35,7 @@ public class CardController implements Initializable {
 	private String questionstring;
 	private String answerstring;
 	private Stage stage; //required later by fileChooser in load/saveDictionary methods
-	private boolean originalDirection=true;//questions taken from db.getDictionary
+	private boolean originalDirection=true;//questions taken from db.getDictionary not reverse
 	
 	@FXML // fx:id="question"
     private Label question; // Value injected by FXMLLoader
@@ -43,7 +50,7 @@ public class CardController implements Initializable {
     private MenuItem changeDirButton; // Value injected by FXMLLoader
     
     //animation sets new question and unlocks answer box
-    final Timeline animation = new Timeline(
+    private final Timeline animation = new Timeline(
             new KeyFrame(Duration.seconds(2),
             new EventHandler<ActionEvent>() {
                 @Override public void handle(ActionEvent actionEvent) {
@@ -108,12 +115,13 @@ public class CardController implements Initializable {
         }
  
     @FXML
-    private void loadDictionary(ActionEvent event){
+    private void loadDictionary(ActionEvent event) throws FileNotFoundException{
     	FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load Dictionary");
         stage= (Stage) question.getScene().getWindow();       
         File file = fileChooser.showOpenDialog(stage);
-        db.fillCards(file);
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+        db.fillCards(br);
        
         }
     @FXML //todo refactor maybe you could cut down on repetitive code or something?
@@ -143,7 +151,8 @@ public class CardController implements Initializable {
     	 if(questionstring.equalsIgnoreCase(db.getDictionary().get(answerstring))){
              question.setText("Õige\n"+questionstring+"="+answerstring);
              db.getDictionary().remove(answerstring); //you'll save a csv without this pair
-             //in future remove from reverse and dont remove hwole pair
+             db.getReverseDictionary().remove(questionstring);//don't ask again in this session either
+             //in future remove only  from reverse and dont remove hwole pair
              answer.clear();
              answer.setDisable(true);
              animation.setCycleCount(1);

@@ -3,6 +3,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.TreeMap;
 
 
@@ -23,17 +26,15 @@ public class CardDB {
 	
 	
 	
-	public void fillCards(File file){
+	public void fillCards(BufferedReader br){
 		
 		dictionary.clear();
 		reverse_dictionary.clear();
-		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = "\t";
 		
 		try {
 	 
-			br = new BufferedReader(new FileReader(file));
 			while ((line = br.readLine()) != null) { 
 				String[] flashpair = line.split(cvsSplitBy);
 				dictionary.put(flashpair[0], flashpair[1]);  
@@ -63,13 +64,13 @@ public class CardDB {
 		
 	
 	public void fillCards(){
-		String csvFileName = "Soome.csv";
-		File file = new File(csvFileName);
-		fillCards(file);	
 		
-		
-	}
-	
+		InputStream is = getClass().getResourceAsStream("Soome.csv");
+		InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+		BufferedReader br = new BufferedReader(isr);
+		fillCards(br);
+
 		
 	
 }
+}	
