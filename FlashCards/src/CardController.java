@@ -72,13 +72,14 @@ public class CardController implements Initializable {
         answer.getParent().requestFocus();
     }
 
-    @FXML
+    @FXML 
     private void newQuestion(KeyEvent event) {
     	if(event.getCode() == KeyCode.SPACE){
         	questionstring=getQuestion();
     		question.setText(questionstring);
         	answer.setDisable(false);
-        	answer.requestFocus();//mingi kuradi nipiga nussib midagi 2ra siin
+        	//answer.requestFocus();//mingi kuradi nipiga nussib midagi 2ra siin
+        	answer.clear();
 
 
 
@@ -130,6 +131,9 @@ public class CardController implements Initializable {
     @FXML //todo refactor maybe you could cut down on repetitive code or something?
     private void showAnswer(ActionEvent event) throws InterruptedException {
      answerstring=((TextField) event.getSource()).getText();
+     System.out.println(answerstring);
+     System.out.println(db.getReverseDictionary());
+     System.out.println(db.getReverseDictionary().get(answerstring));  //kuidas perset requestfocusiga see siis nii muutub, db-st enam seda ei saa?
      if (originalDirection){
     	 if(questionstring.equalsIgnoreCase(db.getReverseDictionary().get(answerstring))){
              question.setText("Õige\n"+questionstring+"="+answerstring);
