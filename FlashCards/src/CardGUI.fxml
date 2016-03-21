@@ -8,10 +8,10 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" 
 xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
-fx:controller="CardController">
+fx:controller="CardController" >
 
   <children>
-    <MenuBar layoutX="0.0" layoutY="0.0" prefHeight="24.0" prefWidth="600.0">
+    <MenuBar layoutX="0.0" layoutY="0.0" prefHeight="24.0" prefWidth="600.0" >
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
@@ -32,7 +32,7 @@ fx:controller="CardController">
         </Menu>
       </menus>
     </MenuBar>
-    <VBox layoutX="14.0" layoutY="24.0" prefHeight="362.0" prefWidth="572.0">
+    <VBox layoutX="14.0" layoutY="24.0" prefHeight="362.0" prefWidth="572.0" onKeyPressed="#newQuestion">
       <children>
         <Label fx:id="question" prefHeight="130.0" prefWidth="572.0" text="Label" alignment="CENTER"/>
         <TextField fx:id="answer" prefHeight="172.0" prefWidth="571.9999000000025" onAction="#showAnswer" />
