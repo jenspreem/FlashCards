@@ -25,7 +25,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-
 public class CardController implements Initializable {
 	private final CardDB db;
 	private String questionstring;
@@ -43,16 +42,12 @@ public class CardController implements Initializable {
     private MenuItem save; // Value injected by FXMLLoader
     
     @FXML // fx:id="changeDirButton"
-    private MenuItem changeDirButton; // Value injected by FXMLLoader
-    
- 
+    private MenuItem changeDirButton; // Value injected by FXMLLoader   
 	
 	
     public CardController(CardDB model) {
         this.db = model;
-    }
-    
-
+    } 
     
     private String getQuestion(){
     	Random generator = new Random();
@@ -74,49 +69,48 @@ public class CardController implements Initializable {
 
     @FXML 
     private void newQuestion(KeyEvent event) {
-    	if(event.getCode() == KeyCode.SPACE){
+    	if(event.getCode() == KeyCode.ENTER)//KeyCode.Space + requestfocus started the textfield with a space inserted
+    	{ 
         	questionstring=getQuestion();
     		question.setText(questionstring);
         	answer.setDisable(false);
-        	//answer.requestFocus();//mingi kuradi nipiga nussib midagi 2ra siin
-        	answer.clear();
-
-
-
-    	}
-       
-        }
+        	answer.requestFocus();//space + requestfocus started the textfield with a space inserted
+        	answer.clear();//which is weird as we have this here? shouldnt it clear the space then
+    	}     
+    }
 
 
     @FXML
     private void changeDirection(){
     	originalDirection=!originalDirection;
-    	clear_and_wait();
-    	
+    	clear_and_wait();   	
     }
-
-    
+   
   
     @FXML
-    private void saveDictionary(ActionEvent event){
+    private void saveDictionary(ActionEvent event)
+    {
     	FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Dictionary");
         stage= (Stage) question.getScene().getWindow();       
         File file = fileChooser.showSaveDialog(stage);
-        //todo csv save, add options to denote which direction something is deleted?
         String eol = System.getProperty("line.separator");
 
-        try (Writer writer = new FileWriter(file)) {
-          for (Map.Entry<String, String> entry : db.getDictionary().entrySet()) {
+        try (Writer writer = new FileWriter(file))
+        {
+          for (Map.Entry<String, String> entry : db.getDictionary().entrySet())
+            {
             writer.append(entry.getKey())
                   .append('\t')
                   .append(entry.getValue())
                   .append(eol);
-          }
-        } catch (IOException ex) {
+            }
+        } 
+        catch (IOException ex) 
+        {
           ex.printStackTrace(System.err);
         }
-        }
+    }
  
     @FXML
     private void loadDictionary(ActionEvent event) throws FileNotFoundException{
@@ -125,15 +119,12 @@ public class CardController implements Initializable {
         stage= (Stage) question.getScene().getWindow();       
         File file = fileChooser.showOpenDialog(stage);
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-        db.fillCards(br);
-       
+        db.fillCards(br);     
         }
-    @FXML //todo refactor maybe you could cut down on repetitive code or something?
+    
+    @FXML 
     private void showAnswer(ActionEvent event) throws InterruptedException {
      answerstring=((TextField) event.getSource()).getText();
-     System.out.println(answerstring);
-     System.out.println(db.getReverseDictionary());
-     System.out.println(db.getReverseDictionary().get(answerstring));  //kuidas perset requestfocusiga see siis nii muutub, db-st enam seda ei saa?
      if (originalDirection){
     	 if(questionstring.equalsIgnoreCase(db.getReverseDictionary().get(answerstring))){
              question.setText("Õige\n"+questionstring+"="+answerstring);
@@ -152,9 +143,9 @@ public class CardController implements Initializable {
              question.setText("Õige\n"+questionstring+"="+answerstring);
              db.getDictionary().remove(answerstring); //you'll save a csv without this pair
              db.getReverseDictionary().remove(questionstring);//don't ask again in this session either
-             //in future remove only  from reverse and dont remove hwole pair
+             //in future remove only  from reverse and don't remove whole pair?
+             //then the csv file need extra encoding and processing
              clear_and_wait();
-
 
          }
          else{
@@ -167,10 +158,8 @@ public class CardController implements Initializable {
 
     }
     
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
 		questionstring=(this.getQuestion());
 		question.setText(questionstring);
         question.setTextAlignment(TextAlignment.CENTER);
